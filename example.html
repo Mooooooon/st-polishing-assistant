@@ -15,6 +15,31 @@
                 <div class="polishing_status">状态: <span id="polishing_status_text">未启用</span></div>
             </div>
 
+            <div class="polishing-assistant_block flex-container">
+                <label for="model_url">模型URL:</label>
+                <input id="model_url" type="text" class="text_pole" placeholder="https://api.deepseek.com/v1/chat/completions" />
+            </div>
+
+            <div class="polishing-assistant_block flex-container">
+                <label for="model_name">模型名称:</label>
+                <input id="model_name" type="text" class="text_pole" placeholder="deepseek-chat" />
+            </div>
+
+            <div class="polishing-assistant_block flex-container">
+                <label for="api_key">API密钥:</label>
+                <input id="api_key" type="text" class="text_pole" placeholder="sk-..." />
+            </div>
+
+            <div class="polishing-assistant_block flex-container">
+                <label for="banned_words">禁词(逗号分隔):</label>
+                <input id="banned_words" type="text" class="text_pole" placeholder="一丝,一抹,一丝丝,一般,似乎,仿佛,野兽,小兽,幼兽,他她知道,狡黠,不易察觉,甜腻,闪过,闪着,闪烁,低吼,该死的,发白,泛白,尖叫,灭顶" />
+            </div>
+
+            <div class="polishing-assistant_block flex-container">
+                <label for="prompt_text">提示词:</label>
+                <textarea id="prompt_text" class="text_pole" rows="5" placeholder="输入润色提示词..."></textarea>
+            </div>
+
             <hr class="sysHR" />
         </div>
     </div>
