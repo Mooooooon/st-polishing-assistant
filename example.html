@@ -1,19 +1,18 @@
-<!-- You might want to add additional HTML elements to ST. 
-    It's good practice to separate it out from your code -->
-<div class="example-extension-settings">
+<!-- Polishing Assistant Settings UI -->
+<div class="polishing-assistant-settings">
     <div class="inline-drawer">
         <div class="inline-drawer-toggle inline-drawer-header">
-            <b>Extension Example</b>
+            <b>润色助手 (Polishing Assistant)</b>
             <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
         </div>
         <div class="inline-drawer-content">
-            <div class="example-extension_block flex-container">
-                <input id="my_button" class="menu_button" type="submit" value="Example Button" />
+            <div class="polishing-assistant_block flex-container">
+                <input id="polishing_enabled" type="checkbox" />
+                <label for="polishing_enabled">启用润色助手</label>
             </div>
 
-            <div class="example-extension_block flex-container">
-                <input id="example_setting" type="checkbox" />
-                <label for="example_setting">This is an example</label>
+            <div class="polishing-assistant_block flex-container">
+                <div class="polishing_status">状态: <span id="polishing_status_text">未启用</span></div>
             </div>
 
             <hr class="sysHR" />

@@ -1,33 +1,40 @@
-# SillyTavern Extension Example
+# SillyTavern 润色助手扩展 (Polishing Assistant)
 
-*Provide a brief description of how your extension works, what problem it aims to solve.*
+这个扩展用于在SillyTavern中接收角色回复后，将消息发送给其他模型进行润色处理，以提高回复质量。
 
-## Features
+## 功能特点
 
-*Describe some of the main selling points of your extension.*
+- 监听角色回复消息
+- 提供简单的开关控制界面
+- 支持将消息发送给其他模型进行润色（开发中）
 
-## Installation and Usage
+## 安装方法
 
-### Installation
+1. 下载此扩展到SillyTavern的`public/scripts/extensions/third-party/`目录下
+2. 重启SillyTavern
+3. 在扩展设置中启用"润色助手"
 
-*In most cases, this should just be using ST's inbuilt extension installer.* 
+## 使用说明
 
-### Usage
+1. 在SillyTavern的扩展设置中找到"润色助手"部分
+2. 勾选"启用润色助手"复选框
+3. 开始与角色对话
+4. 当收到角色回复时，扩展会自动捕获消息（目前仅在控制台输出）
 
-*Explain how to use this extension.*
+## 开发计划
 
-## Prerequisites
+- 添加选择润色模型的功能
+- 实现消息发送给外部模型的功能
+- 添加润色结果的显示和应用
 
-*Specify the version of ST necessary here.*
+## 系统要求
 
-## Support and Contributions
+- SillyTavern最新版本
 
-*Where should someone ask for support?*
+## 支持与贡献
 
-*Consider including your own contact info for help/questions.*
+如有问题或建议，请在GitHub上提交issue或pull request。
 
-*How can people help add to this extension?*
+## 许可证
 
-## License
-
-*Be cool, use an open source license.*
+MIT License

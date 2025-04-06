@@ -1,11 +1,11 @@
 {
-    "display_name": "Name Displayed in SillyTavern",
+    "display_name": "Polishing Assistant",
     "loading_order": 9,
     "requires": [],
     "optional": [],
     "js": "index.js",
     "css": "style.css",
-    "author": "yourNameHere",
+    "author": "SillyTavern Community",
     "version": "1.0.0",
-    "homePage": "yourUrlHere"
+    "homePage": "https://github.com/SillyTavern/SillyTavern"
 }

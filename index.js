@@ -1,63 +1,85 @@
-// The main script for the extension
-// The following are examples of some basic extension functionality
+// 润色助手扩展 - 用于对角色回复进行润色处理
 
-//You'll likely need to import extension_settings, getContext, and loadExtensionSettings from extensions.js
 import { extension_settings, getContext, loadExtensionSettings } from "../../../extensions.js";
-
-//You'll likely need to import some other functions from the main script
 import { saveSettingsDebounced } from "../../../../script.js";
+import { eventSource, event_types, updateMessageBlock } from "../../../../script.js";
 
-// Keep track of where your extension is located, name should match repo name
-const extensionName = "st-extension-example";
+// 扩展名称和路径
+const extensionName = "st-polishing-assistant";
 const extensionFolderPath = `scripts/extensions/third-party/${extensionName}`;
 const extensionSettings = extension_settings[extensionName];
-const defaultSettings = {};
+const defaultSettings = {
+  enabled: false,
+};
 
-
- 
-// Loads the extension settings if they exist, otherwise initializes them to the defaults.
+// 加载扩展设置
 async function loadSettings() {
-  //Create the settings if they don't exist
+  // 创建设置（如果不存在）
   extension_settings[extensionName] = extension_settings[extensionName] || {};
   if (Object.keys(extension_settings[extensionName]).length === 0) {
     Object.assign(extension_settings[extensionName], defaultSettings);
   }
 
-  // Updating settings in the UI
-  $("#example_setting").prop("checked", extension_settings[extensionName].example_setting).trigger("input");
+  // 更新UI中的设置
+  $("#polishing_enabled").prop("checked", extension_settings[extensionName].enabled).trigger("input");
+  updateStatusText();
 }
 
-// This function is called when the extension settings are changed in the UI
-function onExampleInput(event) {
+// 更新状态文本
+function updateStatusText() {
+  const statusText = extension_settings[extensionName].enabled ? "已启用" : "未启用";
+  $("#polishing_status_text").text(statusText);
+}
+
+// 当启用/禁用开关被切换时
+function onEnabledInput(event) {
   const value = Boolean($(event.target).prop("checked"));
-  extension_settings[extensionName].example_setting = value;
+  extension_settings[extensionName].enabled = value;
   saveSettingsDebounced();
+  updateStatusText();
+  
+  // 根据启用状态添加或移除事件监听器
+  if (value) {
+    console.log("[润色助手] 已启用消息监听");
+    eventSource.on(event_types.MESSAGE_RECEIVED, handleIncomingMessage);
+  } else {
+    console.log("[润色助手] 已禁用消息监听");
+    eventSource.removeListener(event_types.MESSAGE_RECEIVED, handleIncomingMessage);
+  }
 }
 
-// This function is called when the button is clicked
-function onButtonClick() {
-  // You can do whatever you want here
-  // Let's make a popup appear with the checked setting
-  toastr.info(
-    `The checkbox is ${extension_settings[extensionName].example_setting ? "checked" : "not checked"}`,
-    "A popup appeared because you clicked the button!"
-  );
+// 处理接收到的消息
+function handleIncomingMessage(data) {
+  // 确保扩展已启用
+  if (!extension_settings[extensionName].enabled) return;
+
+  // 获取当前对话上下文
+  const context = getContext();
+  if (context && context.chat) {
+    // 获取最后一条消息的mes属性
+    const lastMessage = context.chat[context.chat.length - 1];
+    const messageId = context.chat.length - 1;
+
+    // 提取<content>标签中的内容
+    const contentMatch = lastMessage.mes.match(/<content>([\s\S]*?)<\/content>/);
+    if (contentMatch) {
+      console.log("[润色助手] Content标签内容:", contentMatch[1]);
+      // 替换内容为test并更新消息
+      lastMessage.mes = lastMessage.mes.replace(contentMatch[1], 'test');
+      updateMessageBlock(messageId, lastMessage);
+    }
+  }
 }
 
-// This function is called when the extension is loaded
+// 扩展加载时执行
 jQuery(async () => {
-  // This is an example of loading HTML from a file
+  // 加载HTML设置界面
   const settingsHtml = await $.get(`${extensionFolderPath}/example.html`);
-
-  // Append settingsHtml to extensions_settings
-  // extension_settings and extensions_settings2 are the left and right columns of the settings menu
-  // Left should be extensions that deal with system functions and right should be visual/UI related 
   $("#extensions_settings").append(settingsHtml);
-
-  // These are examples of listening for events
-  $("#my_button").on("click", onButtonClick);
-  $("#example_setting").on("input", onExampleInput);
-
-  // Load settings when starting things up (if you have any)
-  loadSettings();
+  
+  // 添加事件监听器
+  $("#polishing_enabled").on("input", onEnabledInput);
+  
+  // 加载设置
+  await loadSettings();
 });
