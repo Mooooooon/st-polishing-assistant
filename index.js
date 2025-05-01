@@ -59,6 +59,7 @@ const defaultSettings = {
 【禁忌事项】
 × 禁止弱化原始描写的冲击力
 × 不可替换关键器官/动作的专业术语`,
+  contentRegex: "<content>([\\s\\S]*?)<\\/content>", // 新增：内容提取正则表达式
 };
 
 // 加载扩展设置
@@ -76,7 +77,8 @@ async function loadSettings() {
   extension_settings[extensionName].apiKey = extension_settings[extensionName].apiKey || defaultSettings.apiKey;
   extension_settings[extensionName].prompt = extension_settings[extensionName].prompt || defaultSettings.prompt;
   extension_settings[extensionName].bannedWords = extension_settings[extensionName].bannedWords || defaultSettings.bannedWords;
-  
+  extension_settings[extensionName].contentRegex = extension_settings[extensionName].contentRegex || defaultSettings.contentRegex;
+
   // 确保bannedWords是一个数组且不为空
   if (!Array.isArray(extension_settings[extensionName].bannedWords) || extension_settings[extensionName].bannedWords.length === 0) {
     extension_settings[extensionName].bannedWords = defaultSettings.bannedWords;
@@ -89,6 +91,7 @@ async function loadSettings() {
   $("#api_key").val(extension_settings[extensionName].apiKey);
   $("#prompt_text").val(extension_settings[extensionName].prompt);
   $("#banned_words").val(extension_settings[extensionName].bannedWords.join(','));
+  $("#content_regex").val(extension_settings[extensionName].contentRegex); // 新增
   updateStatusText();
 }
 
@@ -105,6 +108,7 @@ function saveApiSettings() {
   extension_settings[extensionName].apiKey = $("#api_key").val();
   extension_settings[extensionName].prompt = $("#prompt_text").val();
   extension_settings[extensionName].bannedWords = $("#banned_words").val().split(',').filter(word => word.trim() !== '');
+  extension_settings[extensionName].contentRegex = $("#content_regex").val() || defaultSettings.contentRegex; // 新增
   saveSettingsDebounced();
 }
 
@@ -136,8 +140,15 @@ async function handleIncomingMessage(data) {
     // 获取最后一条消息的mes属性
     const lastMessage = context.chat[context.chat.length - 1];
 
-    // 提取<content>标签中的内容
-    const contentMatch = lastMessage.mes.match(/<content>([\s\S]*?)<\/content>/);
+    // 使用用户自定义的正则表达式
+    let contentRegex;
+    try {
+      contentRegex = new RegExp(extension_settings[extensionName].contentRegex);
+    } catch (e) {
+      console.error("[润色助手] 正则表达式无效，使用默认值");
+      contentRegex = /<content>([\s\S]*?)<\/content>/;
+    }
+    const contentMatch = lastMessage.mes.match(contentRegex);
     if (contentMatch) {
       console.log("[润色助手] Content标签内容:", contentMatch[1]);
       // 计算纯中文字数（排除标点和空格）
@@ -190,7 +201,7 @@ jQuery(async () => {
   
   // 添加事件监听器
   $("#polishing_enabled").on("input", onEnabledInput);
-  $("#model_url, #model_name, #api_key, #prompt_text, #banned_words").on("input", saveApiSettings);
+  $("#model_url, #model_name, #api_key, #prompt_text, #banned_words, #content_regex").on("input change", saveApiSettings); // 新增 #content_regex
   
   // 加载设置
   await loadSettings();
