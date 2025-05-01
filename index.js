@@ -155,7 +155,7 @@ async function handleIncomingMessage(data) {
             messages: [
               {
                 role: 'system',
-                content: `${extension_settings[extensionName].prompt}\n不允许使用${extension_settings[extensionName].bannedWords.join(',')}等禁词。\n\n【以下是你需要润色的内容（原文${chineseCharCount}个汉字，请不要少于这个数量），为了地球的安危，加油】`
+                content: `${extension_settings[extensionName].prompt}\n不允许使用${extension_settings[extensionName].bannedWords.join(',')}等禁词。\n\n【以下是你需要处理的内容】`
               },
               {
                 role: 'user',
@@ -164,7 +164,7 @@ async function handleIncomingMessage(data) {
             ]
           })
         });
-        console.log(`${extension_settings[extensionName].prompt}\n不允许使用${extension_settings[extensionName].bannedWords.join(',')}等禁词。\n\n【以下是你需要润色的内容（原文${chineseCharCount}个汉字，请不要少于这个数量），为了地球的安危，加油】`)
+        console.log(`${extension_settings[extensionName].prompt}\n不允许使用${extension_settings[extensionName].bannedWords.join(',')}等禁词。\n\n【以下是你需要处理的内容】`)
         if (!response.ok) {
           throw new Error(`API请求失败: ${response.status}`);
         }
